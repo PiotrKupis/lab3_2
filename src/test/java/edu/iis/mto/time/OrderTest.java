@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +42,19 @@ class OrderTest {
         order.confirm();
 
         assertSame(Order.State.CONFIRMED, order.getOrderState());
+    }
+
+    @Test
+    void orderTimeExpiredShouldThrowAnException() {
+
+        Instant expirationTime = startTime.plus(25, ChronoUnit.HOURS);
+        when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
+
+        order.addItem(DUMMY_ORDER_ITEM);
+        order.submit();
+
+        assertThrows(OrderExpiredException.class, () -> order.confirm());
+        assertSame(order.getOrderState(), Order.State.CANCELLED);
     }
 
 
