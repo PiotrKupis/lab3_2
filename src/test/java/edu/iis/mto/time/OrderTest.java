@@ -73,7 +73,7 @@ class OrderTest {
     }
 
     @Test
-    void confirmationOfAnOrderAfter2HoursShouldReturnConfirmedState() {
+    void confirmationOfAnOrderAfterTwoHoursShouldReturnConfirmedState() {
 
         Instant expirationTime = startTime.plus(2, ChronoUnit.HOURS);
         when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
