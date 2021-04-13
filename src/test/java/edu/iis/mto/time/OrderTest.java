@@ -57,5 +57,20 @@ class OrderTest {
         assertSame(order.getOrderState(), Order.State.CANCELLED);
     }
 
+    @Test
+    void confirmationOfAnOrderOneSecondBeforeExpiration() {
+
+        Instant expirationTime = startTime.plus(23, ChronoUnit.HOURS)
+                .plus(59, ChronoUnit.MINUTES)
+                .plus(59, ChronoUnit.SECONDS);
+        when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
+
+        order.addItem(DUMMY_ORDER_ITEM);
+        order.submit();
+        order.confirm();
+
+        assertSame(Order.State.CONFIRMED, order.getOrderState());
+    }
+
 
 }
