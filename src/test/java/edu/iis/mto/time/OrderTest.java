@@ -80,6 +80,7 @@ class OrderTest {
 
         order.addItem(DUMMY_ORDER_ITEM);
         order.submit();
+        order.confirm();
 
         assertSame(Order.State.CONFIRMED, order.getOrderState());
     }
