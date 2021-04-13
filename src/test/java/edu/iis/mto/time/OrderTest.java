@@ -32,7 +32,7 @@ class OrderTest {
     }
 
     @Test
-    void orderSubmittedWithTheSameDateShouldHasConfirmedState() {
+    void confirmationOfAnOrderAtTheSameTimeAsSubmissionTimeShouldReturnConfirmedState() {
 
         Instant expirationTime = startTime.plus(0, ChronoUnit.HOURS);
         when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
@@ -45,7 +45,7 @@ class OrderTest {
     }
 
     @Test
-    void orderTimeExpiredShouldThrowAnException() {
+    void confirmationOfAnOrderOneHourAfterExpirationTimeShouldThrowAnException() {
 
         Instant expirationTime = startTime.plus(25, ChronoUnit.HOURS);
         when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
@@ -58,7 +58,7 @@ class OrderTest {
     }
 
     @Test
-    void confirmationOfAnOrderOneSecondBeforeExpiration() {
+    void confirmationOfAnOrderOneSecondBeforeExpirationShouldReturnConfirmedState() {
 
         Instant expirationTime = startTime.plus(23, ChronoUnit.HOURS)
                 .plus(59, ChronoUnit.MINUTES)
@@ -72,5 +72,15 @@ class OrderTest {
         assertSame(Order.State.CONFIRMED, order.getOrderState());
     }
 
+    @Test
+    void confirmationOfAnOrderAfter2HoursShouldReturnConfirmedState() {
 
+        Instant expirationTime = startTime.plus(2, ChronoUnit.HOURS);
+        when(clockMock.instant()).thenReturn(startTime).thenReturn(expirationTime);
+
+        order.addItem(DUMMY_ORDER_ITEM);
+        order.submit();
+
+        assertSame(Order.State.CONFIRMED, order.getOrderState());
+    }
 }
